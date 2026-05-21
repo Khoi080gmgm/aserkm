@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer Portfolio [Gaming Edition]</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --hue: 348;
+            --saturation: 100%;
+            --lightness: 50%;
+            
+            --primary-color: hsl(var(--hue), var(--saturation), var(--lightness));
+            
+            /* Chủ đề TỐI */
+            --bg-color: #0a0a0a;
+            --text-color: #e0e0e0;
+            --card-bg: #1a1a1a;
+            --border-color: #333;
+
+            --secondary-color: #00ffff;
+        }
+
+        /* Chủ đề SÁNG */
+        :root.light-mode {
+            --bg-color: #f4f4f4;
+            --text-color: #1a1a1a;
+            --card-bg: #ffffff;
+            --border-color: #cccccc;
+        }
+        :root.light-mode #scanline-overlay { display: none; }
+        :root.light-mode .glitch::before,
+        :root.light-mode .glitch::after { background: var(--bg-color); }
+        :root.light-mode .status-dot { border-color: var(--bg-color); }
+
+        /* --- ĐÃ XÓA PHẦN RGB MODE --- */
+
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Animation Ánh Sáng Nền */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at 50% 50%, hsla(var(--hue), var(--saturation), var(--lightness), 0.08), transparent 40%);
+            z-index: 0;
+            animation: moveLight 15s linear infinite alternate;
+            pointer-events: none;
+            transition: background 0.3s ease;
+        }
+        @keyframes moveLight {
+            from { transform: translate(-25%, -25%); }
+            to { transform: translate(0%, 0%); }
+        }
+
+        /* Scanline & Vignette */
+        #scanline-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+            background: linear-gradient( to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.2) 50.5% );
+            background-size: 100% 4px;
+            animation: scanlines 0.2s linear infinite;
+        }
+        @keyframes scanlines { 0% { background-position: 0 0; } 100% { background-position: 0 4px; } }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            width: 100%;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nav-links { display: flex; justify-content: center; list-style: none; }
+        .nav-link {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 3px;
+            background: var(--primary-color);
+            transition: width 0.3s ease-out, background-color 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        /* Page Handling */
+        .page {
+            padding-top: 100px; 
+            margin-top: -80px;
+            min-height: 80vh;
+        }
+        .page#home {
+            padding-top: 40px; 
+            margin-top: 0;
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px var(--primary-color);
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        /* Page 1: Home */
+        .profile-header { text-align: center; margin-bottom: 30px; }
+        .profile-pic-container { position: relative; display: inline-block; margin-bottom: 20px; }
+        .profile-pic {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--primary-color);
+            animation: pulse-glow 2s infinite ease-in-out;
+            transition: border-color 0.3s ease;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px var(--primary-color); }
+            50% { box-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color); }
+            100% { box-shadow: 0 0 5px var(--primary-color); }
+        }
+        .status-dot {
+            width: 20px; height: 20px;
+            background: #00ff00;
+            border-radius: 50%;
+            border: 3px solid var(--bg-color);
+            position: absolute; bottom: 10px; right: 10px;
+            transition: border-color 0.3s ease;
+        }
+        .bio { font-size: 1.1rem; max-width: 600px; margin: 10px auto; font-style: italic; color: #aaa; }
+        .social-links { text-align: center; }
+        .social-icon {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+            border: 2px solid var(--border-color);
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Animation "GLITCH" */
+        .glitch {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 4rem;
+            position: relative;
+            color: var(--text-color);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: glitch-main 1s linear infinite;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: var(--bg-color);
+            overflow: hidden;
+            clip-path: inset(50% 0 50% 0);
+            transition: background-color 0.3s ease;
+        }
+        .glitch::before {
+            left: -2px;
+            text-shadow: 2px 0 var(--secondary-color);
+            animation: glitch-anim-1 2s linear infinite reverse;
+        }
+        .glitch::after {
+            left: 2px;
+            text-shadow: -2px 0 var(--primary-color);
+            animation: glitch-anim-2 3s linear infinite reverse;
+        }
+        @keyframes glitch-main { 0% { transform: skewX(0); } 10% { transform: skewX(-5deg); } 20% { transform: skewX(0); } 30% { transform: skewX(8deg); } 40% { transform: skewX(0); } 100% { transform: skewX(0); } }
+        @keyframes glitch-anim-1 { 0% { clip-path: inset(50% 0 50% 0); } 20% { clip-path: inset(20% 0 70% 0); } 40% { clip-path: inset(80% 0 10% 0); } 60% { clip-path: inset(40% 0 40% 0); } 80% { clip-path: inset(10% 0 85% 0); } 100% { clip-path: inset(50% 0 50% 0); } }
+        @keyframes glitch-anim-2 { 0% { clip-path: inset(50% 0 50% 0); } 15% { clip-path: inset(10% 0 80% 0); } 35% { clip-path: inset(70% 0 20% 0); } 55% { clip-path: inset(30% 0 50% 0); } 75% { clip-path: inset(90% 0 5% 0); } 100% { clip-path: inset(50% 0 50% 0); } }
+
+        /* Page 2: About Me */
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .about-image img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 20px var(--primary-color);
+            margin: 0 auto;
+            display: block;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .about-info h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+        .about-info p { font-size: 1.1rem; margin: 15px 0; color: #ccc; }
+        :root.light-mode .about-info p { color: #555; }
+        .info-list { list-style: none; padding: 0; }
+        .info-list li {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            transition: border-color 0.3s ease;
+        }
+        .info-list li strong {
+            color: var(--primary-color);
+            width: 100px;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .about-container { grid-template-columns: 1fr; text-align: center; }
+            .about-image { margin-bottom: 20px; }
+            .info-list li strong { width: auto; margin-right: 10px; }
+        }
+
+        /* Trang trí góc vuông */
+        .stat-card, .gear-item, .gallery-item, .store-item {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .stat-card::before, .gear-item::before, .gallery-item::before, .store-item::before,
+        .stat-card::after, .gear-item::after, .gallery-item::after, .store-item::after {
+            content: '';
+            position: absolute;
+            width: 15px; height: 15px;
+            opacity: 0.4;
+            transition: opacity 0.3s ease, border-color 0.3s ease;
+            border-color: var(--primary-color);
+        }
+        .stat-card::before, .gear-item::before, .gallery-item::before, .store-item::before {
+            top: 8px; left: 8px;
+            border-top: 2px solid var(--primary-color);
+            border-left: 2px solid var(--primary-color);
+        }
+        .stat-card::after, .gear-item::after, .gallery-item::after, .store-item::after {
+            bottom: 8px; right: 8px;
+            border-bottom: 2px solid var(--primary-color);
+            border-right: 2px solid var(--primary-color);
+        }
+        .stat-card:hover::before, .gear-item:hover::before, .gallery-item:hover::before, .store-item:hover::before,
+        .stat-card:hover::after, .gear-item:hover::after, .gallery-item:hover::after, .store-item:hover::after { opacity: 1; }
+
+        /* Page: Stats/Skills */
+        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .stat-card { padding: 20px; border-radius: 8px; }
+        .stat-card:hover {
+            /* MỚI: Nâng cấp Hover */
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+        .stat-card h3 { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--primary-color); margin-bottom: 10px; transition: color 0.3s ease; }
+        .stat-value { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 2rem; margin-bottom: 15px; }
+        .stat-bar { width: 100%; height: 20px; background: #333; border-radius: 10px; overflow: hidden; }
+        .stat-bar-fill { height: 100%; background: var(--primary-color); box-shadow: 0 0 10px var(--primary-color); animation: fillBar 1.5s ease-out forwards; transition: background-color 0.3s ease, box-shadow 0.3s ease; }
+        @keyframes fillBar { from { width: 0; } }
+
+        /* Page: Gear */
+        .gear-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .gear-item { padding: 25px; border-left: 5px solid var(--primary-color); }
+        .gear-item:hover { transform: translateX(10px); border-color: var(--primary-color); }
+        .gear-item h4 { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--primary-color); margin-bottom: 5px; transition: color 0.3s ease; }
+        
+        /* PAGE: GALLERY */
+        .gallery-filter-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .filter-btn {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .gallery-item { border-radius: 8px; overflow: hidden; cursor: pointer; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+        .gallery-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: hsla(var(--hue), var(--saturation), var(--lightness), 0.7);
+            color: #fff;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease, background-color 0.3s ease;
+        }
+        .gallery-overlay h4 { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; text-transform: uppercase; }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-item:hover img { transform: scale(1.1); }
+
+        
+        /* PAGE CỬA HÀNG (STORE) */
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .store-item {
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .store-item img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 2px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .store-item h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+        .store-item .price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .store-item:hover {
+            /* MỚI: Nâng cấp Hover */
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        /* Page: Contact */
+        .contact-form { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
+        .form-input, .form-textarea {
+            width: 100%; padding: 12px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem; border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+        .form-textarea { min-height: 150px; resize: vertical; }
+        
+        /* === MỚI: HIỆU ỨNG SHINE CHO NÚT === */
+        .btn-submit {
+            position: relative; /* Thêm position */
+            overflow: hidden;    /* Thêm overflow */
+            
+            padding: 12px 20px;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%; /* Bắt đầu bên trái */
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: all 0.6s ease;
+            transform: skewX(-25deg); /* Hiệu ứng vát chéo */
+        }
+        .btn-submit:hover {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+        .btn-submit:hover::before {
+            left: 100%; /* Di chuyển vệt sáng qua phải */
+        }
+        
+        /* CSS CHO LIGHTBOX */
+        #lightbox-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1001;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            animation: zoomIn 0.3s ease-out;
+        }
+        #lightbox-modal.active { display: flex; }
+        .lightbox-content { position: relative; max-width: 90vw; max-height: 90vh; }
+        #lightbox-image {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 30px var(--primary-color);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        #lightbox-close {
+            position: absolute;
+            top: -40px; right: 0;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            transition: color 0.2s ease;
+        }
+        #lightbox-close:hover { color: var(--primary-color); }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        
+        /* BẢNG ĐIỀU KHIỂN CHỦ ĐỀ (Đã xóa RGB) */
+        .theme-switcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 101;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .theme-switcher button {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .theme-switcher button:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--bg-color);
+        }
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+        }
+        input[type="color"]::-moz-color-swatch {
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+        }
+
+        /* === MỚI: CSS CHO SCROLL ANIMATION === */
+        .hidden {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+        .show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div id="scanline-overlay"></div>
+
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="#home" class="nav-link active">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#gallery" class="nav-link">Gallery</a></li>
+            <li><a href="#skills" class="nav-link">Skills</a></li>
+            <li><a href="#store" class="nav-link">Store</a></li> <li><a href="#gear" class="nav-link">Gear</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <section class="page active" id="home">
+            <div class="profile-header">
+                <div class="profile-pic-container">
+                    <img src="avatar.png" alt="Profile Picture" class="profile-pic">
+                    <div class="status-dot"></div>
+                </div>
+                <h1 class="glitch" data-text="AserKM">AserKM</h1>
+                <p class="bio">
+                    Graphic Designer | "Thiết kế hình ảnh chỉ là cái cớ của tôi."
+                </p>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-icon">Behance</a>
+                <a href="https://www.facebook.com/kane.hanabi/" class="social-icon">Facebook</a>
+                <a href="#" class="social-icon">Discord</a>
+            </div>
+        </section>
+
+        <section class="page" id="about">
+            <h2 class="page-title hidden">About Me</h2>
+            <div class="about-container hidden">
+                <div class="about-image">
+                    <img src="avatar.png" alt="AserKM">
+                </div>
+                <div class="about-info">
+                    <h3>AserKM</h3>
+                    <p>Chào! Tôi là một Graphic Designer đam mê công nghệ và game. Trang web này là nơi tôi trưng bày các tác phẩm của mình, kết hợp giữa kỹ năng thiết kế và niềm yêu thích văn hóa "cyberpunk".</p>
+                    <ul class="info-list">
+                        <li><strong>Nickname:</strong> AserKM</li>
+                        <li><strong>Công việc:</strong> Graphic Designer</li>
+                        <li><strong>Nơi sống:</strong> Vietnam</li>
+                        <li><strong>Sở thích:</strong> Gaming, Art, Coding</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="page" id="gallery">
+            <h2 class="page-title hidden">My Gallery</h2>
+            
+            <div class="gallery-filter-nav hidden">
+                <button class="filter-btn active" data-filter="all">Tất cả</button>
+                <button class="filter-btn" data-filter="header">Header</button>
+                <button class="filter-btn" data-filter="logo">Logos</button>
+                <button class="filter-btn" data-filter="ui">UI/UX</button>
+            </div>
+
+            <div class="gallery-grid hidden">
+                <div class="gallery-item" data-category="header"> <img src="1.jpg" alt="Design 1"> <div class="gallery-overlay"><h4>Header Game</h4></div> </div>
+                <div class="gallery-item" data-category="header"> <img src="2.jpg" alt="Design 2"> <div class="gallery-overlay"><h4>Header Anime</h4></div> </div>
+                <div class="gallery-item" data-category="header"> <img src="3.jpg" alt="Design 3"> <div class="gallery-overlay"><h4>Header Game</h4></div> </div>
+                <div class="gallery-item" data-category="header"> <img src="4.jpg" alt="Design 4"> <div class="gallery-overlay"><h4>Header Game</h4></div> </div>
+                <div class="gallery-item" data-category="header"> <img src="5.jpg" alt="Design 5"> <div class="gallery-overlay"><h4>Header Art</h4></div> </div>
+                <div class="gallery-item" data-category="header"> <img src="6.jpg" alt="Design 6"> <div class="gallery-overlay"><h4>Header Anime</h4></div> </div>
+                <div class="gallery-item" data-category="header"> <img src="7.jpg" alt="Design 7"> <div class="gallery-overlay"><h4>Header Anime</h4></div> </div>
+                <div class="gallery-item" data-category="header"> <img src="8.jpg" alt="Design 8"> <div class="gallery-overlay"><h4>Header Anime</h4></div> </div>
+                <div class="gallery-item" data-category="header"> <img src="9.jpg" alt="Design 9"> <div class="gallery-overlay"><h4>Header Game</h4></div> </div>
+                <div class="gallery-item" data-category="logo"> <img src="10.jpg" alt="Design 10"> <div class="gallery-overlay"><h4>Logo</h4></div> </div>
+                <div class="gallery-item" data-category="logo"> <img src="10.jpg" alt="Design 11"> <div class="gallery-overlay"><h4>Logo</h4></div> </div>
+                <div class="gallery-item" data-category="logo"> <img src="10.jpg" alt="Design 12"> <div class="gallery-overlay"><h4>Logo</h4></div> </div>
+            </div>
+        </section>
+
+        <section class="page" id="skills">
+            <h2 class="page-title hidden">My Skills</h2>
+            <div class="stats-container hidden">
+                <div class="stat-card"> <h3>Photoshop</h3> <p class="stat-value">95%</p> <div class="stat-bar"><div class="stat-bar-fill" style="width: 95%;"></div></div> </div>
+                <div class="stat-card"> <h3>Illustrator</h3> <p class="stat-value">80%</p> <div class="stat-bar"><div class="stat-bar-fill" style="width: 80%;"></div></div> </div>
+                <div class="stat-card"> <h3>After Effects</h3> <p class="stat-value">70%</p> <div class="stat-bar"><div class="stat-bar-fill" style="width: 70%;"></div></div> </div>
+            </div>
+        </section>
+
+        <section class="page" id="store">
+            <h2 class="page-title hidden">Store</h2>
+            <div class="store-grid hidden">
+                <div class="store-item">
+                    <img src="https://via.placeholder.com/300x200/ff003c/0a0a0a?text=PSD+Pack+1" alt="Product 1">
+                    <h4>Header PSD Pack</h4>
+                    <p class="price">$15.00</p>
+                    <button class="btn-submit">Buy Now</button>
+                </div>
+                <div class="store-item">
+                    <img src="https://via.placeholder.com/300x200/00ffff/0a0a0a?text=Logo+Templates" alt="Product 2">
+                    <h4>Cyber Logo Templates</h4>
+                    <p class="price">$10.00</p>
+                    <button class="btn-submit">Buy Now</button>
+                </div>
+                <div class="store-item">
+                    <img src="https://via.placeholder.com/300x200/ffffff/0a0a0a?text=UI+Kit" alt="Product 3">
+                    <h4>Gaming UI Kit</h4>
+                    <p class="price">$25.00</p>
+                    <button class="btn-submit">Buy Now</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page" id="gear">
+            <h2 class="page-title hidden">My Gear</h2>
+            <div class="gear-grid hidden">
+                <div class="gear-item"><h4>PC</h4><p>NVIDIA RTX 4080 / 64GB RAM</p></div>
+                <div class="gear-item"><h4>Tablet</h4><p>Wacom Intuos Pro M</p></div>
+                <div class="gear-item"><h4>Monitor</h4><p>Dell Ultrasharp 27" 4K</p></div>
+                <div class="gear-item"><h4>Mouse</h4><p>Logitech MX Master 3</p></div>
+            </div>
+        </section>
+
+        <section class="page" id="contact">
+            <h2 class="page-title hidden">Contact Me</h2>
+            <form class="contact-form hidden">
+                <input type="text" placeholder="Your Name" class="form-input">
+                <input type="email" placeholder="Your Email" class="form-input">
+                <textarea placeholder="Your Message (Project details...)" class="form-textarea"></textarea>
+                <button type="submit" class="btn-submit">Send Project</button>
+            </form>
+        </section>
+
+    </div>
+
+    <div id="lightbox-modal">
+        <span id="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-image" src="" alt="Enlarged Design">
+        </div>
+    </div>
+
+    <div class="theme-switcher">
+        <button id="light-toggle-btn">Sáng / Tối</button>
+        <div class="color-picker-wrapper">
+            <span>Màu:</span>
+            <input type="color" id="color-picker" value="#ff003c">
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. LOGIC SCROLL-SPY ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.page');
+            const navHeight = document.querySelector('.navbar').offsetHeight;
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - navHeight - 20; 
+                    if (window.scrollY >= sectionTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+                if (window.scrollY < sections[0].offsetTop + sections[0].offsetHeight - navHeight) {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    document.querySelector('.nav-link[href="#home"]').classList.add('active');
+                }
+            });
+
+            // --- 2. LOGIC LỌC (FILTER) ---
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.dataset.filter;
+                    galleryItems.forEach(item => {
+                        const category = item.dataset.category;
+                        if (filter === 'all' || category === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // --- 3. LOGIC LIGHTBOX ---
+            const modal = document.getElementById('lightbox-modal');
+            const modalImg = document.getElementById('lightbox-image');
+            const closeBtn = document.getElementById('lightbox-close');
+            const galleryGrid = document.querySelector('.gallery-grid');
+
+            galleryGrid.addEventListener('click', (e) => {
+                const item = e.target.closest('.gallery-item');
+                if (item) {
+                    const imgSrc = item.querySelector('img').src;
+                    modalImg.src = imgSrc;
+                    modal.classList.add('active');
+                }
+            });
+            const closeModal = () => { modal.classList.remove('active'); };
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) { closeModal(); }
+            });
+
+
+            // --- 4. LOGIC CHỦ ĐỀ (Đã xóa RGB) ---
+            const lightToggleBtn = document.getElementById('light-toggle-btn');
+            const colorPicker = document.getElementById('color-picker');
+            const root = document.documentElement; 
+
+            // Nút Sáng/Tối
+            lightToggleBtn.addEventListener('click', () => {
+                root.classList.toggle('light-mode');
+            });
+
+            // Nút Chọn Màu
+            colorPicker.addEventListener('input', (e) => {
+                const hexColor = e.target.value;
+                const [h, s, l] = hexToHsl(hexColor);
+                
+                root.style.setProperty('--hue', h);
+                root.style.setProperty('--saturation', s + '%');
+                root.style.setProperty('--lightness', l + '%');
+            });
+
+            function hexToHsl(hex) {
+                hex = hex.replace(/#/, '');
+                const r = parseInt(hex.substring(0, 2), 16) / 255;
+                const g = parseInt(hex.substring(2, 4), 16) / 255;
+                const b = parseInt(hex.substring(4, 6), 16) / 255;
+                const max = Math.max(r, g, b), min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+                if (max == min) { h = s = 0; } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+                return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+            }
+            
+            
+            // --- 5. MỚI: LOGIC ANIMATE ON SCROLL ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                    }
+                    // Bỏ "else" để animation chỉ chạy 1 lần
+                });
+            }, {
+                threshold: 0.1 // Kích hoạt khi 10% phần tử lọt vào màn hình
+            });
+
+            // Lấy tất cả phần tử có class .hidden và theo dõi
+            const hiddenElements = document.querySelectorAll('.hidden');
+            hiddenElements.forEach((el) => observer.observe(el));
+            
+        });
+    </script>
+</body>
+</html>
