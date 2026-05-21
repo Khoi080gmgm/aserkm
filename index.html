@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Digital Art & Design</title>
+    <title>Portfolio | Digital Art & Design (Dark Mode Default)</title>
     
     <!-- Google Fonts: Hỗ trợ chuyển đổi Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
             --primary-color: #6c5ce7;
             --font-main: 'Poppins', sans-serif;
             
-            /* Light Mode (Mặc định) */
+            /* Light Mode */
             --bg-color-1: #ff9a9e;
             --bg-color-2: #fecfef;
             --bg-color-3: #a1c4fd;
@@ -31,7 +31,7 @@
             --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
-        /* Dark Mode */
+        /* Dark Mode (Mặc định được kích hoạt qua class trên body) */
         body.dark-mode {
             --bg-color-1: #190a25;
             --bg-color-2: #2b1055;
@@ -411,6 +411,62 @@
             background: #2d3436;
             color: #fff;
         }
+
+        /* =========================================
+           [CHI TIẾT THÊM VÀO] - LIGHTBOX STYLES (Glassmorphism)
+        ========================================= */
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        #lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #lightbox-img {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #lightbox.active #lightbox-img {
+            transform: scale(1);
+        }
+
+        #lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        #lightbox-close:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -420,12 +476,13 @@
                 padding: 30px;
             }
             nav ul {
-                display: none; /* Trên mobile có thể làm menu hamburger, tạm ẩn cho gọn */
+                display: none;
             }
         }
     </style>
 </head>
-<body>
+<!-- THAY ĐỔI: Thêm class dark-mode làm mặc định cho trang gốc -->
+<body class="dark-mode">
 
     <!-- Header / Navigation (Glassmorphism) -->
     <header class="glass">
@@ -473,7 +530,6 @@
             <div class="gallery-grid">
                 <!-- Tác phẩm 1 -->
                 <div class="glass gallery-item">
-                    <!-- Ảnh minh họa lấy từ Unsplash -->
                     <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Artwork 1">
                     <div class="gallery-overlay">
                         <h4>Concept Art: Thế giới ảo</h4>
@@ -537,9 +593,10 @@
         <!-- Chế độ Sáng/Tối -->
         <div class="setting-group">
             <h4>Chế độ hiển thị</h4>
+            <!-- THAY ĐỔI: Khởi tạo icon mặt trời và chữ tương ứng do mặc định là giao diện tối -->
             <div class="theme-switch" onclick="toggleTheme()">
-                <i class="fas fa-moon" id="themeIcon"></i>
-                <span id="themeText">Chuyển sang Dark Mode</span>
+                <i class="fas fa-sun" id="themeIcon"></i>
+                <span id="themeText">Chuyển sang Light Mode</span>
             </div>
         </div>
 
@@ -566,6 +623,12 @@
         </div>
     </div>
 
+    <!-- [CHI TIẾT THÊM VÀO] - LIGHTBOX BOX FOR VIEWING LARGE IMAGES -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <span id="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="Large View" onclick="event.stopPropagation()">
+    </div>
+
     <!-- JAVASCRIPT: Xử lý Logic & Animation -->
     <script>
         // 1. Mở/Đóng Settings Panel
@@ -573,7 +636,7 @@
             document.getElementById('settingsPanel').classList.toggle('active');
         }
 
-        // 2. Chuyển đổi Dark/Light Mode
+        // 2. Chuyển đổi Dark/Light Mode (Logic được giữ nguyên, đảo chiều trạng thái hiển thị)
         function toggleTheme() {
             const body = document.body;
             const themeIcon = document.getElementById('themeIcon');
@@ -602,9 +665,8 @@
         }
 
         // 5. Animation cuộn chuột (Scroll Animation)
-        // Sử dụng IntersectionObserver để kiểm tra khi thẻ cuộn vào tầm nhìn
         const observerOptions = {
-            threshold: 0.1, // Chạy animation khi 10% section xuất hiện
+            threshold: 0.1,
             rootMargin: "0px 0px -50px 0px"
         };
 
@@ -620,11 +682,32 @@
             observer.observe(section);
         });
 
-        // Trigger sẵn hiệu ứng cho section đầu tiên khi vừa load trang
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('info').classList.add('visible');
             }, 200);
+        });
+
+        // =========================================
+        // [CHI TIẾT THÊM VÀO] - LOGIC ĐẶT ĐỘC LẬP CHO LIGHTBOX VIEW LARGE IMAGES
+        // =========================================
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        // Gán sự kiện click động cho các item gallery mà không làm thay đổi cấu trúc HTML gốc
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const imgSrc = item.querySelector('img').src;
+                openLightbox(imgSrc);
+            });
         });
     </script>
 </body>
