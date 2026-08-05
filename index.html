@@ -1,740 +1,458 @@
-
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Digital Art & Design (Dark Mode Default)</title>
-    
-    <!-- Google Fonts: Hỗ trợ chuyển đổi Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome cho Icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>Đọc Truyện - Giao Diện Netflix</title>
     <style>
-        /* =========================================
-           1. CSS VARIABLES (Biến cấu hình màu sắc)
-        ========================================= */
+        /* ================= VARIABLES ================= */
         :root {
-            --primary-color: #6c5ce7;
-            --font-main: 'Poppins', sans-serif;
-            
-            /* Light Mode */
-            --bg-color-1: #ff9a9e;
-            --bg-color-2: #fecfef;
-            --bg-color-3: #a1c4fd;
-            --text-main: #2d3436;
-            --text-muted: #636e72;
-            
-            /* [CHI TIẾT THÊM VÀO] - Biến màu lưới cho Light Mode */
-            --grid-color: rgba(0, 0, 0, 0.05);
-
-            /* Cấu hình Glassmorphism - Light */
-            --glass-bg: rgba(255, 255, 255, 0.25);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --bg-color: #0b0b0b;
+            --grid-color: rgba(255, 255, 255, 0.06); /* Màu lưới chế độ tối (trắng mờ) */
+            --text-color: #f1f1f1;
+            --text-muted: #aaaaaa;
+            --accent-color: #e50914; /* Netflix Red */
+            --glass-bg: rgba(15, 15, 15, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glow-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Dark Mode (Mặc định được kích hoạt qua class trên body) */
-        body.dark-mode {
-            /* THAY ĐỔI THEO YÊU CẦU: Nền đen với vệt sáng lóe rất mờ */
-            --bg-color-1: #000000;
-            --bg-color-2: #14141a; /* Vệt sáng cực mờ */
-            --bg-color-3: #030303;
-            
-            --text-main: #f5f6fa;
-            --text-muted: #b2bec3;
-            
-            /* [CHI TIẾT THÊM VÀO] - Biến màu lưới cho Dark Mode */
-            --grid-color: rgba(255, 255, 255, 0.03);
-
-            /* Cấu hình Glassmorphism - Dark */
-            --glass-bg: rgba(20, 20, 20, 0.35);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        [data-theme="light"] {
+            --bg-color: #f8f9fa;
+            --grid-color: rgba(0, 0, 0, 0.06); /* Màu lưới chế độ sáng (đen mờ) */
+            --text-color: #1a1a1a;
+            --text-muted: #555555;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --glow-shadow: 0 0 15px rgba(229, 9, 20, 0.3);
         }
 
-        /* =========================================
-           2. RESET & BASE STYLES
-        ========================================= */
+        /* ================= RESET & BASE ================= */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
-        }
-
-        html {
-            scroll-behavior: smooth;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: var(--font-main);
-            color: var(--text-main);
-            min-height: 100vh;
-            overflow-x: hidden;
-            /* Tạo background gradient động để tôn lên hiệu ứng kính */
-            background: linear-gradient(45deg, var(--bg-color-1), var(--bg-color-2), var(--bg-color-3));
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* =========================================
-           [CHI TIẾT THÊM VÀO] - GRID BACKGROUND OVERLAY
-        ========================================= */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            background-color: var(--bg-color);
+            
+            /* Thêm background dạng lưới */
             background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 40px 40px; /* Kích thước ô lưới */
-            z-index: -1; /* Đẩy xuống dưới cùng, trên cái nền gradient động */
-            pointer-events: none;
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 30px 30px; /* Kích thước mỗi ô vuông lưới */
+            background-position: center top;
+            
+            color: var(--text-color);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
         }
 
-        /* =========================================
-           3. GLASSMORPHISM CORE CLASS
-        ========================================= */
         .glass {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: 20px;
         }
 
-        /* =========================================
-           4. LAYOUT & COMPONENTS
-        ========================================= */
-        /* Header */
-        header {
+        /* ================= LOADING SCREEN ================= */
+        #loader {
             position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 1200px;
-            padding: 15px 30px;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--text-muted);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: var(--glow-shadow);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ================= NAVBAR ================= */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            border-radius: 50px;
+            transition: var(--transition);
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-main);
-            text-decoration: none;
-            letter-spacing: 1px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: var(--glow-shadow);
+            cursor: pointer;
         }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 30px;
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--accent-color);
+            color: #fff;
+            border-color: var(--accent-color);
+            box-shadow: var(--glow-shadow);
         }
 
-        nav a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 500;
+        /* ================= HERO / GIỚI THIỆU ================= */
+        .hero {
+            height: 80vh;
             position: relative;
-            padding: 5px 0;
+            display: flex;
+            align-items: flex-end;
+            padding: 50px 5%;
+            background: url('https://sf-static.upanhlaylink.com/img/image_20260805dd6373fe1c2b82cb6dd4d6a6dfa630d2.jpg') center/cover no-repeat;
         }
 
-        nav a::after {
+        .hero::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: var(--primary-color);
-            transition: width 0.3s ease;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
+            z-index: 1;
         }
 
-        nav a:hover::after {
-            width: 100%;
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            animation: slideUp 1s ease forwards;
         }
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 120px 20px 60px;
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
         }
 
-        section {
-            margin-bottom: 80px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+        .hero-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #ddd; /* Luôn giữ màu sáng trên nền ảnh */
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
         }
 
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .btn-read {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .btn-read:hover {
+            transform: scale(1.05);
+            background: #ff0f1a;
+            box-shadow: 0 0 25px rgba(229, 9, 20, 0.8);
+        }
+
+        /* ================= DANH SÁCH CHƯƠNG ================= */
+        .chapters-section {
+            padding: 40px 5%;
+            z-index: 2;
+            position: relative;
         }
 
         .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            text-align: center;
-            color: var(--primary-color);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        /* Information Section (Hero) */
-        .info-card {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            padding: 50px;
-        }
-        
-        .info-text h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-        
-        .info-text h2 {
             font-size: 1.5rem;
-            color: var(--primary-color);
             margin-bottom: 20px;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
         }
 
-        .info-text p {
-            line-height: 1.8;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 30px;
-            background: var(--primary-color);
-            color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        /* About Section */
-        .about-content {
-            padding: 40px;
-            line-height: 1.8;
-        }
-
-        .skills {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .skill-tag {
-            padding: 8px 20px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid var(--glass-border);
-            font-weight: 500;
-        }
-
-        body.dark-mode .skill-tag {
-            background: rgba(0,0,0,0.2);
-        }
-
-        /* Gallery Section */
-        .gallery-grid {
+        .chapter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .gallery-item {
-            position: relative;
-            height: 350px;
-            border-radius: 20px;
-            overflow: hidden;
-            cursor: pointer;
-            /* Tab/Hover Animation */
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.03) translateY(-10px);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            color: #fff;
-            transition: bottom 0.4s ease;
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            bottom: 0;
-        }
-
-        /* Footer */
-        footer {
-            margin-top: auto;
-            padding: 40px 20px;
-            text-align: center;
-            border-radius: 40px 40px 0 0;
-            border-bottom: none;
-        }
-
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
         }
 
-        .contact-info {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-        }
-
-        .contact-item i {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-        }
-
-        /* =========================================
-           5. SETTINGS PANEL (Đổi màu, font, sáng/tối)
-        ========================================= */
-        .settings-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        .settings-panel {
-            position: fixed;
-            bottom: 90px;
-            right: 30px;
-            width: 280px;
+        .chapter-card {
             padding: 20px;
-            transform: translateX(150%);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 999;
-        }
-
-        .settings-panel.active {
-            transform: translateX(0);
-        }
-
-        .setting-group {
-            margin-bottom: 20px;
-        }
-        
-        .setting-group:last-child {
-            margin-bottom: 0;
-        }
-
-        .setting-group h4 {
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Toggle Switch Sáng/Tối */
-        .theme-switch {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border-radius: 10px;
             cursor: pointer;
-        }
-
-        /* Bảng màu */
-        .color-palette {
+            transition: var(--transition);
             display: flex;
-            gap: 10px;
-        }
-        
-        .color-dot {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s;
-        }
-        
-        .color-dot:hover {
-            transform: scale(1.2);
-        }
-
-        /* Dropdown Font */
-        select {
-            width: 100%;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid var(--glass-border);
-            background: transparent;
-            color: var(--text-main);
-            outline: none;
-            font-family: inherit;
-        }
-        
-        select option {
-            background: #2d3436;
-            color: #fff;
-        }
-
-        /* =========================================
-           [CHI TIẾT THÊM VÀO] - LIGHTBOX STYLES (Glassmorphism)
-        ========================================= */
-        #lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            display: flex;
+            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
         }
 
-        #lightbox.active {
-            opacity: 1;
-            pointer-events: auto;
+        .chapter-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: var(--glow-shadow);
         }
 
-        #lightbox-img {
-            max-width: 90%;
-            max-height: 85%;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            transform: scale(0.9);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .chapter-num {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
         }
 
-        #lightbox.active #lightbox-img {
-            transform: scale(1);
-        }
-
-        #lightbox-close {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            color: #fff;
-            font-size: 40px;
+        .chapter-name {
+            font-size: 1.2rem;
             font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s, transform 0.2s;
         }
 
-        #lightbox-close:hover {
-            color: var(--primary-color);
-            transform: scale(1.1);
+        /* ================= GIAO DIỆN ĐỌC TRUYỆN ================= */
+        .reader-view {
+            display: none; /* Ẩn mặc định */
+            padding: 100px 5% 50px;
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease;
         }
-        
-        /* Responsive */
+
+        .btn-back {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-back:hover {
+            background: var(--glass-bg);
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .reader-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .reader-content {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            margin-top: 40px;
+        }
+
+        .reader-content p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        /* ================= ANIMATIONS ================= */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================= RESPONSIVE ================= */
         @media (max-width: 768px) {
-            .info-card {
-                flex-direction: column;
-                text-align: center;
-                padding: 30px;
-            }
-            nav ul {
-                display: none;
-            }
+            .hero { padding-bottom: 30px; }
+            .chapter-grid { grid-template-columns: 1fr; }
+            .reader-content { font-size: 1.1rem; }
         }
     </style>
 </head>
-<!-- THAY ĐỔI: Thêm class dark-mode làm mặc định cho trang gốc -->
-<body class="dark-mode">
+<body>
 
-    <!-- Header / Navigation (Glassmorphism) -->
-    <header class="glass">
-        <a href="#" class="logo">Khôi<span style="color: var(--primary-color)">Design</span></a>
-        <nav>
-            <ul>
-                <li><a href="#info">Thông tin</a></li>
-                <li><a href="#about">Về tôi</a></li>
-                <li><a href="#gallery">Sản phẩm</a></li>
-            </ul>
-        </nav>
-    </header>
+    <!-- LOADING SCREEN -->
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
 
-    <div class="container">
-        <!-- 1. INFORMATION SECTION -->
-        <section id="info">
-            <div class="glass info-card">
-                <div class="info-text">
-                    <h1>Xin chào, mình là Bùi Trần Minh Khôi</h1>
-                    <h2>Digital Artist & Graphic Designer</h2>
-                    <p>Chuyên thiết kế nhân vật, sáng tác concept art và chỉnh sửa đồ họa đa nền tảng. Với tư duy thẩm mỹ hiện đại, mình biến những ý tưởng trừu tượng thành các tác phẩm nghệ thuật kỹ thuật số sống động.</p>
-                    <button class="btn" onclick="document.getElementById('gallery').scrollIntoView();">Xem Tác Phẩm</button>
-                </div>
+    <!-- NAVBAR -->
+    <nav class="glass" id="navbar">
+        <div class="logo" onclick="goHome()">NOVELFLIX</div>
+        <button class="theme-toggle" onclick="toggleTheme()">Sáng / Tối</button>
+    </nav>
+
+    <!-- TRANG CHỦ (GIỚI THIỆU & DANH SÁCH) -->
+    <main id="home-view">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Kamen Rider Vector</h1>
+                <p class="hero-desc">
+                    Nơi ranh giới giữa thực thể và công nghệ đã hoàn toàn hòa làm một, thì con người cũng lộ bản chất thật của mình, những người được coi là ân nhân có công xây dựng 5 thế giới lại bị chính chính phủ tham nhũng quay lưng và bỏ mặt, từ đó tất cả các thảm họa được sinh ra.
+Thảm họa có quy mô lớn nhất vũ trụ có thể nói đến thảm họa Archermic của đội Null - nơi tập trung của các Developer bị chính phủ phản bội tạo ra lũ virus/worm/trojan - 5 thế giới tưởng chừng đã bị hủy diệt hoàn toàn thì 1 thực thể được sinh ra từ lỗi đã ngăn cản thảm họa diễn ra - Virus Master.
+                </p>
+                <button class="btn-read" onclick="openChapter(1)">ĐỌC NGAY CHƯƠNG 1</button>
+            </div>
+        </header>
+
+        <!-- Chapters Section -->
+        <section class="chapters-section">
+            <h2 class="section-title">Danh Sách Chương</h2>
+            <div class="chapter-grid" id="chapter-list">
+                <!-- Nội dung được render bằng JavaScript -->
             </div>
         </section>
+    </main>
 
-        <!-- 2. ABOUT SECTION -->
-        <section id="about">
-            <h3 class="section-title">Về Tôi</h3>
-            <div class="glass about-content">
-                <p>Nghệ thuật không chỉ là vẽ, mà là cách kể một câu chuyện không cần lời. Mình tập trung vào việc tạo ra các thiết kế có chiều sâu, kết hợp màu sắc và ánh sáng để mang lại cảm xúc mạnh mẽ cho người xem.</p>
-                <div class="skills">
-                    <span class="skill-tag"><i class="fas fa-paint-brush"></i> Digital Painting</span>
-                    <span class="skill-tag"><i class="fas fa-mobile-alt"></i> Ibis Paint</span>
-                    <span class="skill-tag"><i class="fas fa-video"></i> Alight Motion</span>
-                    <span class="skill-tag"><i class="fas fa-cut"></i> CapCut</span>
-                    <span class="skill-tag"><i class="fas fa-pen-nib"></i> Character Design</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. GALLERY SECTION -->
-        <section id="gallery">
-            <h3 class="section-title">Phòng Trưng Bày</h3>
-            <div class="gallery-grid">
-                <!-- Tác phẩm 1 -->
-                <div class="glass gallery-item">
-                    <img src="https://khoi080gmgm.github.io/aserkm/1.jpg" alt="Artwork 1">
-                    <div class="gallery-overlay">
-                        <h4>Concept Art: Thế giới ảo</h4>
-                        <p>Thiết kế bối cảnh không gian kỹ thuật số.</p>
-                    </div>
-                </div>
-                <!-- Tác phẩm 2 -->
-                <div class="glass gallery-item">
-                    <img src="https://khoi080gmgm.github.io/aserkm/2.jpg" alt="Artwork 2">
-                    <div class="gallery-overlay">
-                        <h4>Thiết kế nhân vật</h4>
-                        <p>Bản phác thảo nhân vật phong cách Anime/Manga.</p>
-                    </div>
-                </div>
-                <!-- Tác phẩm 3 -->
-                <div class="glass gallery-item">
-                    <img src="https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=2487&auto=format&fit=crop" alt="Artwork 3">
-                    <div class="gallery-overlay">
-                        <h4>Abstract Graphics</h4>
-                        <p>Thử nghiệm màu sắc và hình khối.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="glass" style="border-radius: 40px 40px 0 0; border-bottom: none; border-left: none; border-right: none;">
-        <div class="footer-content">
-            <h3 style="font-size: 1.5rem;">Liên Hệ Hợp Tác</h3>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Bùi Trần Minh Khôi</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-comment-dots"></i>
-                    <span>Zalo: 09xx.xxx.xxx</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fab fa-facebook"></i>
-                    <span>FB: /khoi.design</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-university"></i>
-                    <span>MB Bank: 123456789 (BUI TRAN MINH KHOI)</span>
-                </div>
-            </div>
-            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
-                &copy; 2026 Designed by Minh Khoi. All rights reserved.
-            </p>
+    <!-- TRANG ĐỌC TRUYỆN -->
+    <main id="reader-view" class="reader-view">
+        <button class="btn-back glass" onclick="goHome()">
+            <span>&#8592;</span> Quay lại danh sách
+        </button>
+        <h1 class="reader-title" id="r-title">Tên Chương</h1>
+        <div class="reader-content" id="r-content">
+            <!-- Nội dung truyện -->
         </div>
-    </footer>
+    </main>
 
-    <!-- SETTINGS BUTTON & PANEL -->
-    <div class="glass settings-btn" onclick="toggleSettings()">
-        <i class="fas fa-cog fa-spin-hover"></i>
-    </div>
+<script>
+        // Dữ liệu truyện chỉ cần lưu đường dẫn file txt thay vì nội dung
+        const chaptersData = [
+            { id: 1, title: "Sự Thức Tỉnh", file: "chuong1.txt" },
+            { id: 2, title: "Đối Đầu Giữa Màn Đêm", file: "chuong2.txt" },
+            { id: 3, title: "Huyết Chiến", file: "chuong3.txt" }
+        ];
 
-    <div class="glass settings-panel" id="settingsPanel">
-        <!-- Chế độ Sáng/Tối -->
-        <div class="setting-group">
-            <h4>Chế độ hiển thị</h4>
-            <!-- THAY ĐỔI: Khởi tạo icon mặt trời và chữ tương ứng do mặc định là giao diện tối -->
-            <div class="theme-switch" onclick="toggleTheme()">
-                <i class="fas fa-sun" id="themeIcon"></i>
-                <span id="themeText">Chuyển sang Light Mode</span>
-            </div>
-        </div>
+        // Tắt Loading screen khi trang tải xong
+        window.onload = () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 600);
+            }, 1000); 
+            renderChapters();
+        };
 
-        <!-- Bảng màu (Color Picker) -->
-        <div class="setting-group">
-            <h4>Màu chủ đạo</h4>
-            <div class="color-palette">
-                <div class="color-dot" style="background: #6c5ce7;" onclick="changeColor('#6c5ce7')"></div>
-                <div class="color-dot" style="background: #ff7675;" onclick="changeColor('#ff7675')"></div>
-                <div class="color-dot" style="background: #00b894;" onclick="changeColor('#00b894')"></div>
-                <div class="color-dot" style="background: #e84393;" onclick="changeColor('#e84393')"></div>
-                <div class="color-dot" style="background: #fdcb6e;" onclick="changeColor('#fdcb6e')"></div>
-            </div>
-        </div>
-
-        <!-- Đổi Font chữ -->
-        <div class="setting-group">
-            <h4>Font chữ (Google Fonts)</h4>
-            <select id="fontSelect" onchange="changeFont()">
-                <option value="'Poppins', sans-serif">Poppins (Mặc định)</option>
-                <option value="'Roboto', sans-serif">Roboto (Hiện đại)</option>
-                <option value="'Playfair Display', serif">Playfair (Nghệ thuật)</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- [CHI TIẾT THÊM VÀO] - LIGHTBOX BOX FOR VIEWING LARGE IMAGES -->
-    <div id="lightbox" onclick="closeLightbox()">
-        <span id="lightbox-close" onclick="closeLightbox()">&times;</span>
-        <img id="lightbox-img" src="" alt="Large View" onclick="event.stopPropagation()">
-    </div>
-
-    <!-- JAVASCRIPT: Xử lý Logic & Animation -->
-    <script>
-        // 1. Mở/Đóng Settings Panel
-        function toggleSettings() {
-            document.getElementById('settingsPanel').classList.toggle('active');
+        // Chức năng đổi Theme (Sáng/Tối)
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
         }
 
-        // 2. Chuyển đổi Dark/Light Mode (Logic được giữ nguyên, đảo chiều trạng thái hiển thị)
-        function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
+        // Render danh sách chương
+        function renderChapters() {
+            const grid = document.getElementById('chapter-list');
+            grid.innerHTML = '';
+            chaptersData.forEach(chapter => {
+                const card = document.createElement('div');
+                card.className = 'chapter-card glass';
+                card.onclick = () => openChapter(chapter.id);
+                card.innerHTML = `
+                    <div class="chapter-num">Chương ${chapter.id}</div>
+                    <div class="chapter-name">${chapter.title}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Chuyển cảnh & Fetch dữ liệu từ file txt
+        async function openChapter(id) {
+            const chapter = chaptersData.find(c => c.id === id);
+            if (!chapter) return;
+
+            // Set tiêu đề chương
+            document.getElementById('r-title').innerText = `Chương ${chapter.id}: ${chapter.title}`;
             
-            body.classList.toggle('dark-mode');
-            
-            if (body.classList.contains('dark-mode')) {
-                themeIcon.className = 'fas fa-sun';
-                themeText.innerText = 'Chuyển sang Light Mode';
-            } else {
-                themeIcon.className = 'fas fa-moon';
-                themeText.innerText = 'Chuyển sang Dark Mode';
+            // Hiển thị trạng thái đang tải
+            const contentBox = document.getElementById('r-content');
+            contentBox.innerHTML = '<p style="text-align: center; opacity: 0.7;">Đang tải nội dung...</p>';
+
+            // Chuyển cảnh ngay lập tức
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('reader-view').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            try {
+                // Dùng fetch để gọi file txt
+                const response = await fetch(chapter.file);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Lấy nội dung text
+                const text = await response.text();
+                
+                // Tách các đoạn văn bằng dấu xuống dòng và bọc vào thẻ <p>
+                const formattedContent = text.split('\n')
+                    .filter(line => line.trim() !== '') // Loại bỏ các dòng trống
+                    .map(line => `<p>${line.trim()}</p>`) // Bọc từng dòng vào thẻ <p>
+                    .join('');
+                
+                // In ra màn hình
+                contentBox.innerHTML = formattedContent;
+
+            } catch (error) {
+                console.error("Lỗi tải truyện: ", error);
+                contentBox.innerHTML = `
+                    <div style="text-align: center; color: var(--accent-color); margin-top: 50px;">
+                        <h3>Không thể tải file <b>${chapter.file}</b></h3>
+                        <p style="margin-top: 15px; font-size: 1rem; color: var(--text-muted);">
+                            Lưu ý: Nếu bạn đang mở trực tiếp file HTML trên trình duyệt (đường dẫn bắt đầu bằng file://), <br>
+                            hãy sử dụng Local Server (như Live Server trên VS Code) để trình duyệt cấp quyền đọc file.
+                        </p>
+                    </div>`;
             }
         }
 
-        // 3. Đổi màu chủ đạo (CSS Variable)
-        function changeColor(color) {
-            document.documentElement.style.setProperty('--primary-color', color);
+        // Quay về trang chủ
+        function goHome() {
+            document.getElementById('reader-view').style.display = 'none';
+            document.getElementById('home-view').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 4. Đổi Font chữ
-        function changeFont() {
-            const font = document.getElementById('fontSelect').value;
-            document.documentElement.style.setProperty('--font-main', font);
-        }
-
-        // 5. Animation cuộn chuột (Scroll Animation)
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('section').forEach(section => {
-            observer.observe(section);
-        });
-
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('info').classList.add('visible');
-            }, 200);
-        });
-
-        // =========================================
-        // [CHI TIẾT THÊM VÀO] - LOGIC ĐẶT ĐỘC LẬP CHO LIGHTBOX VIEW LARGE IMAGES
-        // =========================================
-        function openLightbox(src) {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = src;
-            lightbox.classList.add('active');
-        }
-
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('active');
-        }
-
-        // Gán sự kiện click động cho các item gallery mà không làm thay đổi cấu trúc HTML gốc
-        document.querySelectorAll('.gallery-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const imgSrc = item.querySelector('img').src;
-                openLightbox(imgSrc);
-            });
+        // Hiệu ứng làm mờ Navbar khi cuộn
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.5)';
+            } else {
+                nav.style.boxShadow = 'none';
+            }
         });
     </script>
 </body>
