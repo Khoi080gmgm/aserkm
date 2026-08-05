@@ -8,10 +8,10 @@
         /* ================= VARIABLES ================= */
         :root {
             --bg-color: #0b0b0b;
-            --grid-color: rgba(255, 255, 255, 0.06); /* Màu lưới chế độ tối (trắng mờ) */
+            --grid-color: rgba(255, 255, 255, 0.06); 
             --text-color: #f1f1f1;
             --text-muted: #aaaaaa;
-            --accent-color: #e50914; /* Netflix Red */
+            --accent-color: #e50914; 
             --glass-bg: rgba(15, 15, 15, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
             --glow-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
@@ -20,7 +20,7 @@
 
         [data-theme="light"] {
             --bg-color: #f8f9fa;
-            --grid-color: rgba(0, 0, 0, 0.06); /* Màu lưới chế độ sáng (đen mờ) */
+            --grid-color: rgba(0, 0, 0, 0.06); 
             --text-color: #1a1a1a;
             --text-muted: #555555;
             --glass-bg: rgba(255, 255, 255, 0.7);
@@ -38,14 +38,11 @@
 
         body {
             background-color: var(--bg-color);
-            
-            /* Thêm background dạng lưới */
             background-image: 
                 linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
                 linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-            background-size: 30px 30px; /* Kích thước mỗi ô vuông lưới */
+            background-size: 30px 30px; 
             background-position: center top;
-            
             color: var(--text-color);
             transition: background-color 0.5s ease, color 0.5s ease;
             overflow-x: hidden;
@@ -135,7 +132,7 @@
             display: flex;
             align-items: flex-end;
             padding: 50px 5%;
-            background: url('https://sf-static.upanhlaylink.com/img/image_20260805dd6373fe1c2b82cb6dd4d6a6dfa630d2.jpg') center/cover no-repeat;
+            background: url('https://images.unsplash.com/photo-1618336753974-aae8e0450654?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
         }
 
         .hero::after {
@@ -163,7 +160,7 @@
         .hero-desc {
             font-size: 1.1rem;
             line-height: 1.6;
-            color: #ddd; /* Luôn giữ màu sáng trên nền ảnh */
+            color: #ddd; 
             margin-bottom: 25px;
             text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
         }
@@ -236,12 +233,21 @@
 
         /* ================= GIAO DIỆN ĐỌC TRUYỆN ================= */
         .reader-view {
-            display: none; /* Ẩn mặc định */
+            display: none; 
             padding: 100px 5% 50px;
             max-width: 900px;
             margin: 0 auto;
             min-height: 100vh;
             animation: fadeIn 0.5s ease;
+        }
+
+        .reader-header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .btn-back {
@@ -251,7 +257,6 @@
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            margin-bottom: 30px;
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -260,6 +265,41 @@
 
         .btn-back:hover {
             background: var(--glass-bg);
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        /* ================= TTS CONTROLS (TEXT TO SPEECH) ================= */
+        .tts-controls {
+            display: flex;
+            gap: 10px;
+            padding: 10px 15px;
+            border-radius: 30px;
+        }
+
+        .btn-tts {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .btn-tts:hover {
+            transform: scale(1.05);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .btn-tts-stop {
+            background: #555;
+            display: none; /* Ẩn lúc ban đầu */
+        }
+
+        .btn-tts-stop:hover {
+            background: #777;
             box-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
 
@@ -291,7 +331,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ================= RESPONSIVE ================= */
         @media (max-width: 768px) {
             .hero { padding-bottom: 30px; }
             .chapter-grid { grid-template-columns: 1fr; }
@@ -312,9 +351,8 @@
         <button class="theme-toggle" onclick="toggleTheme()">Sáng / Tối</button>
     </nav>
 
-    <!-- TRANG CHỦ (GIỚI THIỆU & DANH SÁCH) -->
+    <!-- TRANG CHỦ -->
     <main id="home-view">
-        <!-- Hero Section -->
         <header class="hero">
             <div class="hero-content">
                 <h1 class="hero-title">Kamen Rider Vector</h1>
@@ -326,27 +364,36 @@ Thảm họa có quy mô lớn nhất vũ trụ có thể nói đến thảm h�
             </div>
         </header>
 
-        <!-- Chapters Section -->
         <section class="chapters-section">
             <h2 class="section-title">Danh Sách Chương</h2>
             <div class="chapter-grid" id="chapter-list">
-                <!-- Nội dung được render bằng JavaScript -->
+                <!-- JS Render -->
             </div>
         </section>
     </main>
 
     <!-- TRANG ĐỌC TRUYỆN -->
     <main id="reader-view" class="reader-view">
-        <button class="btn-back glass" onclick="goHome()">
-            <span>&#8592;</span> Quay lại danh sách
-        </button>
+        
+        <div class="reader-header-controls">
+            <button class="btn-back glass" onclick="goHome()">
+                <span>&#8592;</span> Quay lại danh sách
+            </button>
+            
+            <!-- THANH ĐIỀU KHIỂN ĐỌC BẰNG AI -->
+            <div class="tts-controls glass">
+                <button class="btn-tts" id="btn-tts-play" onclick="toggleSpeech()">🔊 Đọc bằng AI</button>
+                <button class="btn-tts btn-tts-stop" id="btn-tts-stop" onclick="stopSpeech()">⏹ Dừng</button>
+            </div>
+        </div>
+
         <h1 class="reader-title" id="r-title">Tên Chương</h1>
         <div class="reader-content" id="r-content">
             <!-- Nội dung truyện -->
         </div>
     </main>
 
-<script>
+    <script>
         // Dữ liệu truyện chỉ cần lưu đường dẫn file txt thay vì nội dung
         const chaptersData = [
             { id: 1, title: "Mở màn", file: "chap1.txt" },
@@ -356,7 +403,6 @@ Thảm họa có quy mô lớn nhất vũ trụ có thể nói đến thảm h�
             { id: 5, title: "Kudoso hay virus", file: "chap5.txt" }
         ];
 
-        // Tắt Loading screen khi trang tải xong
         window.onload = () => {
             setTimeout(() => {
                 const loader = document.getElementById('loader');
@@ -364,9 +410,13 @@ Thảm họa có quy mô lớn nhất vũ trụ có thể nói đến thảm h�
                 setTimeout(() => loader.style.display = 'none', 600);
             }, 1000); 
             renderChapters();
+            
+            // Kích hoạt load giọng đọc (đặc biệt cần thiết trên Chrome)
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
         };
 
-        // Chức năng đổi Theme (Sáng/Tối)
         function toggleTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
@@ -374,7 +424,6 @@ Thảm họa có quy mô lớn nhất vũ trụ có thể nói đến thảm h�
             html.setAttribute('data-theme', newTheme);
         }
 
-        // Render danh sách chương
         function renderChapters() {
             const grid = document.getElementById('chapter-list');
             grid.innerHTML = '';
@@ -390,41 +439,30 @@ Thảm họa có quy mô lớn nhất vũ trụ có thể nói đến thảm h�
             });
         }
 
-        // Chuyển cảnh & Fetch dữ liệu từ file txt
         async function openChapter(id) {
             const chapter = chaptersData.find(c => c.id === id);
             if (!chapter) return;
 
-            // Set tiêu đề chương
             document.getElementById('r-title').innerText = `Chương ${chapter.id}: ${chapter.title}`;
-            
-            // Hiển thị trạng thái đang tải
             const contentBox = document.getElementById('r-content');
             contentBox.innerHTML = '<p style="text-align: center; opacity: 0.7;">Đang tải nội dung...</p>';
 
-            // Chuyển cảnh ngay lập tức
+            // Dừng đọc AI nếu đang đọc chương cũ
+            stopSpeech();
+
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('reader-view').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             try {
-                // Dùng fetch để gọi file txt
                 const response = await fetch(chapter.file);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                // Lấy nội dung text
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const text = await response.text();
                 
-                // Tách các đoạn văn bằng dấu xuống dòng và bọc vào thẻ <p>
                 const formattedContent = text.split('\n')
-                    .filter(line => line.trim() !== '') // Loại bỏ các dòng trống
-                    .map(line => `<p>${line.trim()}</p>`) // Bọc từng dòng vào thẻ <p>
+                    .filter(line => line.trim() !== '')
+                    .map(line => `<p>${line.trim()}</p>`)
                     .join('');
-                
-                // In ra màn hình
                 contentBox.innerHTML = formattedContent;
 
             } catch (error) {
@@ -433,21 +471,19 @@ Thảm họa có quy mô lớn nhất vũ trụ có thể nói đến thảm h�
                     <div style="text-align: center; color: var(--accent-color); margin-top: 50px;">
                         <h3>Không thể tải file <b>${chapter.file}</b></h3>
                         <p style="margin-top: 15px; font-size: 1rem; color: var(--text-muted);">
-                            Lưu ý: Nếu bạn đang mở trực tiếp file HTML trên trình duyệt (đường dẫn bắt đầu bằng file://), <br>
-                            hãy sử dụng Local Server (như Live Server trên VS Code) để trình duyệt cấp quyền đọc file.
+                            Lưu ý: Bạn cần chạy bằng Local Server để fetch dữ liệu từ txt.
                         </p>
                     </div>`;
             }
         }
 
-        // Quay về trang chủ
         function goHome() {
+            stopSpeech(); // Dừng đọc AI khi thoát về trang chủ
             document.getElementById('reader-view').style.display = 'none';
             document.getElementById('home-view').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Hiệu ứng làm mờ Navbar khi cuộn
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 50) {
@@ -456,6 +492,93 @@ Thảm họa có quy mô lớn nhất vũ trụ có thể nói đến thảm h�
                 nav.style.boxShadow = 'none';
             }
         });
+
+/* ================= TÍNH NĂNG ĐỌC BẰNG AI (TEXT TO SPEECH) ================= */
+        let isSpeaking = false;
+
+        function getVietnameseVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            
+            // Tìm tất cả các giọng có mã ngôn ngữ là 'vi' (Tiếng Việt)
+            const viVoices = voices.filter(voice => voice.lang.includes('vi') || voice.lang.includes('VI'));
+            
+            // Ưu tiên chọn giọng của Google (ví dụ: Google Tiếng Việt) vì đọc tự nhiên nhất
+            const googleVoice = viVoices.find(voice => voice.name.includes('Google'));
+            
+            // Trả về giọng Google, nếu không có thì lấy giọng tiếng Việt đầu tiên tìm thấy, nếu không có nữa thì trả về null
+            return googleVoice || viVoices[0] || null;
+        }
+
+        function toggleSpeech() {
+            const synth = window.speechSynthesis;
+            const btnPlay = document.getElementById('btn-tts-play');
+            
+            if (isSpeaking) {
+                if (synth.speaking && !synth.paused) {
+                    synth.pause();
+                    btnPlay.innerHTML = '▶️ Tiếp tục đọc';
+                } else if (synth.paused) {
+                    synth.resume();
+                    btnPlay.innerHTML = '⏸ Tạm dừng';
+                }
+            } else {
+                startSpeech();
+            }
+        }
+
+        function startSpeech() {
+            const textToRead = document.getElementById('r-content').innerText;
+            if (!textToRead) return;
+
+            const synth = window.speechSynthesis;
+            synth.cancel(); // Hủy các luồng cũ đang đọc dở (nếu có)
+
+            const utterance = new SpeechSynthesisUtterance(textToRead);
+            
+            // ÉP BUỘC ngôn ngữ phải là Tiếng Việt
+            utterance.lang = 'vi-VN'; 
+            utterance.rate = 1.0; // Tốc độ đọc (1.0 là bình thường)
+            utterance.pitch = 1.0; // Độ cao giọng đọc
+
+            const voice = getVietnameseVoice();
+            if (voice) {
+                utterance.voice = voice;
+            } else {
+                // Nếu trình duyệt thực sự không có giọng tiếng Việt nào
+                alert("Trình duyệt/Thiết bị của bạn hiện không có sẵn bộ giọng đọc Tiếng Việt. Hãy thử mở trang web này bằng Google Chrome, hoặc cài đặt thêm ngôn ngữ Tiếng Việt trong phần Setting của máy nhé!");
+            }
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                document.getElementById('btn-tts-play').innerHTML = '⏸ Tạm dừng';
+                document.getElementById('btn-tts-stop').style.display = 'block';
+            };
+
+            utterance.onend = () => {
+                resetSpeechUI();
+            };
+
+            utterance.onerror = (e) => {
+                // Bỏ qua lỗi bị ngắt (cancel) khi người dùng bấm dừng
+                if (e.error !== 'canceled') {
+                    console.error("Lỗi TTS:", e);
+                }
+                resetSpeechUI();
+            };
+
+            synth.speak(utterance);
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+            resetSpeechUI();
+        }
+
+        function resetSpeechUI() {
+            isSpeaking = false;
+            document.getElementById('btn-tts-play').innerHTML = '🔊 Đọc bằng AI';
+            document.getElementById('btn-tts-stop').style.display = 'none';
+        }
     </script>
 </body>
 </html>
